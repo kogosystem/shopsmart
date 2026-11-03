@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Register')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+
+<div class="container my-5" style="max-width:620px;">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <h3 class="fw-bold text-center mb-4"><i class="bi bi-person-plus text-success"></i> Create your account</h3>
+
+            <!-- th:object binds the whole form to the RegisterForm DTO.
+                 Each th:field wires one input and shows its validation error. -->
+            <form th:action="@{/register}" method="post" th:object="${registerForm}">
+                <div class="mb-3">
+                    <label class="form-label">Full name</label>
+                    <input type="text" class="form-control" th:field="*{fullName}"
+                           th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                    <div class="invalid-feedback" th:errors="*{email}"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" th:field="*{password}"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{password}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Confirm password</label>
+                        <input type="password" class="form-control" th:field="*{confirmPassword}"
+                               th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid'">
+                        <div class="invalid-feedback" th:errors="*{confirmPassword}"></div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone <span class="text-muted small">(optional)</span></label>
+                    <input type="text" class="form-control" th:field="*{phone}" placeholder="0712345678">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Delivery address <span class="text-muted small">(optional)</span></label>
+                    <input type="text" class="form-control" th:field="*{address}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">City / town <span class="text-muted small">(optional)</span></label>
+                    <input type="text" class="form-control" th:field="*{city}" placeholder="Nairobi">
+                </div>
+                <button type="submit" class="btn btn-ss w-100">Create account</button>
+            </form>
+            <p class="text-center mt-3 mb-0 small">
+                Already registered? <a th:href="@{/login}">Login</a></p>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

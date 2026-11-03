@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Customer history')}"></head>
+<body>
+<div class="ss-admin-wrap">
+    <div th:replace="~{fragments/admin-sidebar :: sidebar('customers')}"></div>
+    <div class="ss-admin-content">
+        <a th:href="@{/admin/customers}" class="btn btn-sm btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Back</a>
+        <h3 class="fw-bold" th:text="${customer.fullName}">Customer</h3>
+        <p class="text-muted" th:text="${customer.email} + ' | ' + ${customer.phone}">email</p>
+
+        <h5 class="fw-bold mt-4">Purchase history</h5>
+        <div class="card border-0 shadow-sm">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead><tr><th>Order</th><th>Date</th><th>Items</th><th>Total</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr th:each="o : ${orders}">
+                            <td th:text="'#' + ${o.id}">#1</td>
+                            <td th:text="${#temporals.format(o.orderDate,'dd MMM yyyy')}">date</td>
+                            <td th:text="${o.items.size()}">0</td>
+                            <td th:text="'KSh ' + ${#numbers.formatDecimal(o.totalAmount,1,'COMMA',2,'POINT')}">KSh</td>
+                            <td><span class="badge bg-secondary" th:text="${o.status}">PENDING</span></td>
+                        </tr>
+                        <tr th:if="${orders.isEmpty()}"><td colspan="5" class="text-muted">No orders yet.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

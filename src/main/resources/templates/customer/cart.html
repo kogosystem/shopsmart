@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Your cart')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <h3 class="fw-bold mb-3"><i class="bi bi-cart3"></i> Your cart</h3>
+
+    <div th:if="${cart == null or cart.items.isEmpty()}" class="alert alert-info">
+        Your cart is empty. <a th:href="@{/products}">Browse products</a> to add something.
+    </div>
+
+    <div th:if="${cart != null and !cart.items.isEmpty()}" class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead><tr><th>Product</th><th>Unit price</th><th>Qty</th><th>Subtotal</th><th></th></tr></thead>
+                        <tbody>
+                            <tr th:each="item : ${cart.items}">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img th:src="@{'/images/products/' + ${item.product.imageUrl}}"
+                                             onerror="this.src='/images/products/placeholder.png'"
+                                             style="width:48px;height:48px;object-fit:cover;" class="rounded">
+                                        <a th:href="@{'/products/' + ${item.product.id}}"
+                                           th:text="${item.product.name}" class="text-decoration-none">Product</a>
+                                    </div>
+                                </td>
+                                <td th:text="'KSh ' + ${#numbers.formatDecimal(item.product.price,1,'COMMA',2,'POINT')}">KSh</td>
+                                <td style="min-width:150px;">
+                                    <!-- Set an exact quantity (validated server-side against stock). -->
+                                    <form th:action="@{/cart/update}" method="post" class="d-flex align-items-center gap-1">
+                                        <input type="hidden" name="cartItemId" th:value="${item.id}">
+                                        <input type="number" name="quantity" th:value="${item.quantity}" min="1"
+                                               th:max="${item.product.stock}" class="form-control form-control-sm" style="width:70px;">
+                                        <button class="btn btn-sm btn-outline-secondary" type="submit">
+                                            <i class="bi bi-arrow-repeat"></i></button>
+                                    </form>
+                                </td>
+                                <td th:text="'KSh ' + ${#numbers.formatDecimal(item.subtotal,1,'COMMA',2,'POINT')}">KSh</td>
+                                <td>
+                                    <form th:action="@{/cart/remove}" method="post">
+                                        <input type="hidden" name="cartItemId" th:value="${item.id}">
+                                        <button class="btn btn-sm btn-outline-danger" type="submit">
+                                            <i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <a th:href="@{/products}" class="btn btn-outline-success mt-3">
+                <i class="bi bi-arrow-left"></i> Continue shopping</a>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Order summary</h5>
+                    <div class="d-flex justify-content-between mt-3">
+                        <span>Items</span><span th:text="${cart.itemCount}">0</span></div>
+                    <div class="d-flex justify-content-between fs-5 fw-bold mt-2">
+                        <span>Total</span>
+                        <span th:text="'KSh ' + ${#numbers.formatDecimal(cart.total,1,'COMMA',2,'POINT')}">KSh 0.00</span>
+                    </div>
+                    <a th:href="@{/checkout}" class="btn btn-ss w-100 mt-3">
+                        <i class="bi bi-bag-check"></i> Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

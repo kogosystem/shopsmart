@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('My profile')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="bi bi-person-circle text-success" style="font-size:3rem;"></i>
+                    <h5 class="fw-bold mt-2" th:text="${user.fullName}">Name</h5>
+                    <p class="text-muted mb-1" th:text="${user.email}">email</p>
+                    <p class="small mb-0">Member since
+                        <span th:text="${#temporals.format(user.createdAt,'MMM yyyy')}">date</span></p>
+                    <p class="small">Orders placed: <strong th:text="${orderCount}">0</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Edit profile</h5>
+                    <!-- Email is shown read-only: customers cannot change it or their role. -->
+                    <form th:action="@{/profile}" method="post" th:object="${profileForm}">
+                        <div class="mb-3">
+                            <label class="form-label">Email (cannot be changed)</label>
+                            <input class="form-control" th:value="${user.email}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Full name</label>
+                            <input class="form-control" th:field="*{fullName}"
+                                   th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{fullName}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone</label>
+                            <input class="form-control" th:field="*{phone}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Address</label>
+                            <input class="form-control" th:field="*{address}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">City / town</label>
+                            <input class="form-control" th:field="*{city}">
+                        </div>
+                        <button type="submit" class="btn btn-ss">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

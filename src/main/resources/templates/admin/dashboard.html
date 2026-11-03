@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Admin dashboard')}"></head>
+<body>
+<div class="ss-admin-wrap">
+    <div th:replace="~{fragments/admin-sidebar :: sidebar('dashboard')}"></div>
+    <div class="ss-admin-content">
+        <h3 class="fw-bold mb-1">Dashboard</h3>
+        <p class="text-muted">Live figures from the database.</p>
+        <div th:replace="~{fragments/messages :: messages}"></div>
+
+        <!-- Stat cards -->
+        <div class="row g-3">
+            <div class="col-6 col-md-3"><div class="ss-stat g1"><div class="n" th:text="${stats.totalCustomers}">0</div><div class="l">Customers</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g2"><div class="n" th:text="${stats.totalProducts}">0</div><div class="l">Products</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g3"><div class="n" th:text="${stats.totalCategories}">0</div><div class="l">Categories</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g4"><div class="n" th:text="${stats.totalOrders}">0</div><div class="l">Orders</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g5"><div class="n" th:text="'KSh ' + ${#numbers.formatInteger(stats.totalSales,1,'COMMA')}">0</div><div class="l">Total sales</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g6"><div class="n" th:text="${stats.totalRecommendations}">0</div><div class="l">Recommendations</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g1"><div class="n" th:text="${stats.likes}">0</div><div class="l">Likes</div></div></div>
+            <div class="col-6 col-md-3"><div class="ss-stat g5"><div class="n" th:text="${stats.dislikes}">0</div><div class="l">Dislikes</div></div></div>
+        </div>
+
+        <!-- Recommendation accuracy headline (from temporal evaluation) -->
+        <div class="row g-3 mt-1">
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="fw-bold">Products per category</h6>
+                        <canvas id="catChart" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="fw-bold">Recommendation accuracy
+                            <span class="text-muted small">(personalised, top-<span th:text="${evaluation[0].topN}">8</span>)</span></h6>
+                        <table class="table table-sm mt-2 mb-3">
+                            <tr><td>Precision</td><td class="text-end fw-bold" th:text="${evaluation[0].precisionPct} + '%'">0%</td></tr>
+                            <tr><td>Recall</td><td class="text-end fw-bold" th:text="${evaluation[0].recallPct} + '%'">0%</td></tr>
+                            <tr><td>F1 score</td><td class="text-end fw-bold" th:text="${evaluation[0].f1Pct} + '%'">0%</td></tr>
+                        </table>
+                        <canvas id="fbChart" height="140"></canvas>
+                        <a th:href="@{/admin/evaluation}" class="btn btn-sm btn-outline-success mt-3 w-100">Full evaluation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<!-- th:inline='javascript' lets us drop server data straight into the charts. -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const catData = /*[[${productsPerCategory}]]*/ {};
+    const fbData  = /*[[${feedbackBreakdown}]]*/ {};
+
+    new Chart(document.getElementById('catChart'), {
+        type: 'bar',
+        data: { labels: Object.keys(catData),
+                datasets: [{ label: 'Products', data: Object.values(catData),
+                             backgroundColor: '#0f7b47' }] },
+        options: { plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}} }
+    });
+    new Chart(document.getElementById('fbChart'), {
+        type: 'doughnut',
+        data: { labels: Object.keys(fbData),
+                datasets: [{ data: Object.values(fbData),
+                             backgroundColor: ['#0f7b47','#c0392b'] }] }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>

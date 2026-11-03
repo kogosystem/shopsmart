@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Home')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <!-- Hero -->
+    <div  class="ss-hero mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1>Shop smarter in Kenya.</h1>
+                <p class="lead mb-4">Electronics, fashion, groceries and more &mdash; with
+                    personalised picks that learn from what you actually buy.</p>
+                <a th:href="@{/products}" class="btn btn-warning btn-lg fw-semibold">
+                    <i class="bi bi-bag"></i> Start shopping</a>
+                <a th:href="@{/register}" class="btn btn-outline-light btn-lg ms-2">Create account</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <h4 class="fw-bold mb-3">Shop by category</h4>
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-3" th:each="c : ${categories}">
+            <a th:href="@{'/category/' + ${c.id}}"
+               class="d-block text-center p-3 bg-white rounded shadow-sm text-decoration-none text-dark">
+                <i class="bi bi-grid-3x3-gap-fill fs-3 text-success"></i>
+                <div class="fw-semibold mt-2" th:text="${c.name}">Category</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Featured -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold mb-0">Featured products</h4>
+        <a th:href="@{/products}" class="btn btn-sm btn-outline-success">See all</a>
+    </div>
+    <div class="row g-3">
+        <div class="col-6 col-md-3" th:each="p : ${featured}">
+            <div th:replace="~{fragments/cards :: product(${p})}"></div>
+        </div>
+        <p th:if="${featured.isEmpty()}" class="text-muted">No products yet. Please check back soon.</p>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

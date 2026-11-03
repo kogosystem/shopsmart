@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Recommended for you')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h3 class="fw-bold mb-0"><i class="bi bi-stars text-warning"></i> Recommended for you</h3>
+        <!-- Re-run the engine and log a fresh recommendation run. -->
+        <form th:action="@{/recommendations/refresh}" method="post">
+            <button class="btn btn-outline-success btn-sm"><i class="bi bi-arrow-clockwise"></i> Refresh</button>
+        </form>
+    </div>
+    <p class="text-muted">
+        Chosen from your purchase history, your likes, and what is popular &mdash; items you have
+        already bought are never shown again. Generated
+        <span th:text="${#temporals.format(run.generatedAt,'dd MMM yyyy, HH:mm')}">date</span>.</p>
+
+    <div class="row g-3">
+        <div class="col-6 col-md-3" th:each="rec : ${run.items}">
+            <div th:replace="~{fragments/cards :: recommendation(${rec}, ${run.id}, '/recommendations')}"></div>
+        </div>
+    </div>
+    <div th:if="${run.items.isEmpty()}" class="alert alert-info mt-3">
+        We do not have enough information yet. Browse and buy a few products, then come back.
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

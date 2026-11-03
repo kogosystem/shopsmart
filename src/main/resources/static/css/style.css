@@ -1,0 +1,77 @@
+/* ============================================================
+   ShopSmart Kenya - custom styles layered on top of Bootstrap 5.
+   Kept small and readable: brand colours, product cards, admin
+   layout, recommendation badges.
+   ============================================================ */
+
+:root {
+    --ss-green: #0f7b47;      /* Kenyan-flag inspired green  */
+    --ss-dark: #14281d;
+    --ss-accent: #f0a500;     /* warm amber for calls to action */
+}
+/* fix accidental non-ascii above by overriding */
+:root { --ss-green-dark: #0b5a34; }
+
+body { background:#f6f8f7; color:#1f2d27; }
+
+/* ---------- navbar ---------- */
+.ss-navbar { background: linear-gradient(90deg, var(--ss-green), var(--ss-green-dark)); }
+.ss-navbar .ss-ke { color: var(--ss-accent); }
+.ss-navbar .nav-link { font-weight:500; }
+
+/* ---------- hero ---------- */
+.ss-hero {
+    /*background: linear-gradient(120deg, var(--ss-green), var(--ss-green-dark));*/
+    color:#fff; border-radius:1rem; padding:3rem 2rem;
+    background: #1769aa;
+}
+.ss-hero h1 { font-weight:800; }
+
+/* ---------- product cards ---------- */
+.ss-card { border:none; border-radius:.85rem; overflow:hidden; transition:transform .15s, box-shadow .15s;
+    box-shadow:0 1px 3px rgba(0,0,0,.08); height:100%; background:#fff; }
+.ss-card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,.12); }
+.ss-card .ss-img { height:180px; object-fit:cover; width:100%; background:#eef2f0; }
+.ss-card .ss-price { color:var(--ss-green-dark); font-weight:700; font-size:1.15rem; }
+.ss-badge-cat { background:#e8f3ec; color:var(--ss-green-dark); font-weight:600; }
+.ss-out { filter:grayscale(.6); opacity:.8; }
+
+/* recommendation reason + score pill */
+.ss-reason { font-size:.8rem; color:#6c7a72; font-style:italic; }
+.ss-score { background:var(--ss-accent); color:#3a2c00; font-weight:700; }
+
+/* ---------- buttons ---------- */
+.btn-ss { background:var(--ss-green); color:#fff; font-weight:600; }
+.btn-ss:hover { background:var(--ss-green-dark); color:#fff; }
+
+/* ---------- footer ---------- */
+.ss-footer { background:var(--ss-dark); color:#cfe3d7; }
+.ss-footer a { color:#cfe3d7; text-decoration:none; }
+.ss-footer a:hover { color:#fff; }
+
+/* ---------- admin layout ---------- */
+.ss-admin-wrap { display:flex; min-height:100vh; }
+.ss-admin-sidebar {
+    width:240px; background:var(--ss-dark); color:#fff; position:fixed; top:0; bottom:0;
+    display:flex; flex-direction:column; padding:1rem 0;
+}
+.ss-admin-brand { font-size:1.25rem; font-weight:800; padding:.5rem 1.25rem 1rem; }
+.ss-admin-sidebar .nav-link { color:#bcd6c6; padding:.65rem 1.25rem; }
+.ss-admin-sidebar .nav-link:hover { background:rgba(255,255,255,.06); color:#fff; }
+.ss-admin-sidebar .nav-link.active { background:var(--ss-green); color:#fff; font-weight:600; }
+.ss-admin-foot { margin-top:auto; }
+.ss-admin-content { margin-left:240px; flex:1; padding:1.5rem 2rem; width:calc(100% - 240px); }
+
+/* dashboard stat cards */
+.ss-stat { border-radius:.85rem; color:#fff; padding:1.1rem 1.25rem; }
+.ss-stat .n { font-size:1.9rem; font-weight:800; line-height:1; }
+.ss-stat .l { opacity:.9; font-size:.85rem; }
+.ss-stat.g1 { background:#0f7b47; } .ss-stat.g2 { background:#1769aa; }
+.ss-stat.g3 { background:#b5651d; } .ss-stat.g4 { background:#6a3d9a; }
+.ss-stat.g5 { background:#c0392b; } .ss-stat.g6 { background:#2c7a7b; }
+
+@media (max-width: 768px){
+    .ss-admin-sidebar { position:static; width:100%; }
+    .ss-admin-content { margin-left:0; width:100%; }
+    .ss-admin-wrap { flex-direction:column; }
+}

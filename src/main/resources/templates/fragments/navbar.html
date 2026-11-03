@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- ===== Public / customer top navigation ===== -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark shadow-sm sticky-top ss-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold" th:href="@{/}">
+            <i class="bi bi-bag-check-fill"></i> ShopSmart <span class="ss-ke">Kenya</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <!-- Search runs server-side against the database (GET /products?keyword=). -->
+            <form class="d-flex ms-lg-4 my-2 my-lg-0 flex-grow-1" role="search"
+                  th:action="@{/products}" method="get">
+                <input class="form-control me-2" type="search" name="keyword"
+                       placeholder="Search products..." th:value="${keyword}">
+                <button class="btn btn-light" type="submit"><i class="bi bi-search"></i></button>
+            </form>
+
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
+
+                <!-- Categories dropdown, filled from navCategories (GlobalModelAdvice). -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button"
+                       data-bs-toggle="dropdown">Categories</a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li th:each="c : ${navCategories}">
+                            <a class="dropdown-item" th:href="@{'/category/' + ${c.id}}"
+                               th:text="${c.name}">Category</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Links that only make sense when logged in as a customer. -->
+                <li class="nav-item" th:if="${currentUser != null}">
+                    <a class="nav-link" th:href="@{/recommendations}">
+                        <i class="bi bi-stars"></i> For You</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser != null}">
+                    <a class="nav-link" th:href="@{/orders}">Orders</a>
+                </li>
+
+                <!-- Cart with live count badge. -->
+                <li class="nav-item" th:if="${currentUser != null}">
+                    <a class="nav-link position-relative" th:href="@{/cart}">
+                        <i class="bi bi-cart3"></i> Cart
+                        <span th:if="${cartCount != null and cartCount > 0}" th:text="${cartCount}"
+                              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">0</span>
+                    </a>
+                </li>
+
+                <!-- Admin shortcut only for admins. -->
+                <li class="nav-item" th:if="${isAdmin}">
+                    <a class="nav-link text-warning" th:href="@{/admin/dashboard}">
+                        <i class="bi bi-speedometer2"></i> Admin</a>
+                </li>
+
+                <!-- Account menu: profile + logout when logged in, else login/register. -->
+                <li class="nav-item dropdown" th:if="${currentUser != null}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                        <span th:text="${currentUser.fullName}">User</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/profile}">My profile</a></li>
+                        <li><a class="dropdown-item" th:href="@{/feedback}">My feedback</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <!-- Logout must be a POST so CSRF protection applies. -->
+                            <form th:action="@{/logout}" method="post" class="px-2">
+                                <button class="btn btn-sm btn-outline-danger w-100" type="submit">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item" th:if="${currentUser == null}">
+                    <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+                <li class="nav-item" th:if="${currentUser == null}">
+                    <a class="btn btn-warning btn-sm ms-lg-2" th:href="@{/register}">Register</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

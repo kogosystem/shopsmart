@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Home')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <h3 class="fw-bold">Hi <span th:text="${currentUser.fullName}">Customer</span>, welcome back</h3>
+    <p class="text-muted">Here are picks chosen for you, plus your recent activity.</p>
+
+    <!-- ===== Recommended for you (personalised run) ===== -->
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h4 class="fw-bold mb-0"><i class="bi bi-stars text-warning"></i> Recommended for you</h4>
+        <a th:href="@{/recommendations}" class="btn btn-sm btn-outline-success">See all</a>
+    </div>
+    <div class="row g-3">
+        <div class="col-6 col-md-3" th:each="rec : ${run.items}">
+            <div th:replace="~{fragments/cards :: recommendation(${rec}, ${run.id}, '/home')}"></div>
+        </div>
+        <p th:if="${run.items.isEmpty()}" class="text-muted">
+            Start shopping and your personalised picks will appear here.</p>
+    </div>
+
+    <!-- ===== Recent orders ===== -->
+    <h4 class="fw-bold mt-5 mb-3">Your recent orders</h4>
+    <div class="table-responsive" th:if="${!recentOrders.isEmpty()}">
+        <table class="table bg-white rounded shadow-sm align-middle">
+            <thead><tr><th>Order</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+                <tr th:each="o : ${recentOrders}">
+                    <td th:text="'#' + ${o.id}">#1</td>
+                    <td th:text="${#temporals.format(o.orderDate,'dd MMM yyyy')}">date</td>
+                    <td th:text="'KSh ' + ${#numbers.formatDecimal(o.totalAmount,1,'COMMA',2,'POINT')}">KSh</td>
+                    <td><span class="badge bg-secondary" th:text="${o.status}">PENDING</span></td>
+                    <td><a th:href="@{'/orders/' + ${o.id}}" class="btn btn-sm btn-outline-secondary">View</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p th:if="${recentOrders.isEmpty()}" class="text-muted">You have not placed any orders yet.</p>
+
+    <!-- ===== Featured ===== -->
+    <h4 class="fw-bold mt-5 mb-3">Featured products</h4>
+    <div class="row g-3">
+        <div class="col-6 col-md-3" th:each="p : ${featured}">
+            <div th:replace="~{fragments/cards :: product(${p})}"></div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

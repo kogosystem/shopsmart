@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Checkout')}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <h3 class="fw-bold mb-3"><i class="bi bi-bag-check"></i> Checkout</h3>
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Delivery details</h5>
+                    <form th:action="@{/checkout}" method="post" th:object="${checkoutForm}">
+                        <div class="mb-3">
+                            <label class="form-label">Full name</label>
+                            <input class="form-control" th:field="*{deliveryName}"
+                                   th:classappend="${#fields.hasErrors('deliveryName')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{deliveryName}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone number</label>
+                            <input class="form-control" th:field="*{deliveryPhone}" placeholder="0712345678"
+                                   th:classappend="${#fields.hasErrors('deliveryPhone')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{deliveryPhone}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Delivery address</label>
+                            <input class="form-control" th:field="*{deliveryAddress}"
+                                   th:classappend="${#fields.hasErrors('deliveryAddress')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{deliveryAddress}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">City / town</label>
+                            <input class="form-control" th:field="*{deliveryCity}" placeholder="Nairobi"
+                                   th:classappend="${#fields.hasErrors('deliveryCity')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{deliveryCity}"></div>
+                        </div>
+
+                        <h6 class="fw-bold mt-4">Payment method</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
+                                   value="CASH_ON_DELIVERY" id="cod">
+                            <label class="form-check-label" for="cod">Cash on delivery</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" th:field="*{paymentMethod}"
+                                   value="MPESA_SIMULATION" id="mpesa">
+                            <label class="form-check-label" for="mpesa">
+                                M-Pesa <span class="badge bg-info text-dark">simulation</span></label>
+                        </div>
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('paymentMethod')}"
+                             th:errors="*{paymentMethod}"></div>
+                        <p class="small text-muted mt-2">
+                            <i class="bi bi-info-circle"></i> M-Pesa here is a simulation for this
+                            prototype &mdash; no real payment is taken.</p>
+
+                        <button type="submit" class="btn btn-ss w-100 mt-2">
+                            <i class="bi bi-check2-circle"></i> Place order</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Your order</h5>
+                    <ul class="list-group list-group-flush mb-2">
+                        <li class="list-group-item d-flex justify-content-between px-0"
+                            th:each="item : ${cart.items}">
+                            <span th:text="${item.product.name} + ' x ' + ${item.quantity}">Item</span>
+                            <span th:text="'KSh ' + ${#numbers.formatDecimal(item.subtotal,1,'COMMA',2,'POINT')}">KSh</span>
+                        </li>
+                    </ul>
+                    <div class="d-flex justify-content-between fs-5 fw-bold">
+                        <span>Total</span>
+                        <span th:text="'KSh ' + ${#numbers.formatDecimal(cart.total,1,'COMMA',2,'POINT')}">KSh</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

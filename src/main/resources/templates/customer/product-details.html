@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head(${product.name})}"></head>
+<body>
+<nav th:replace="~{fragments/navbar :: navbar}"></nav>
+<div th:replace="~{fragments/messages :: messages}"></div>
+
+<div class="container my-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/products}">Products</a></li>
+            <li class="breadcrumb-item"><a th:href="@{'/category/' + ${product.category.id}}"
+                                           th:text="${product.category.name}">Category</a></li>
+            <li class="breadcrumb-item active" th:text="${product.name}">Product</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-md-5">
+            <img class="img-fluid rounded shadow-sm w-100"
+                 th:src="@{'/images/products/' + ${product.imageUrl}}"
+                 onerror="this.src='/images/products/placeholder.png'" th:alt="${product.name}">
+        </div>
+        <div class="col-md-7">
+            <span class="badge ss-badge-cat" th:text="${product.category.name}">Category</span>
+            <h2 class="fw-bold mt-2" th:text="${product.name}">Product name</h2>
+            <div class="ss-price fs-3 my-2"
+                 th:text="'KSh ' + ${#numbers.formatDecimal(product.price,1,'COMMA',2,'POINT')}">KSh 0.00</div>
+
+            <p th:if="${product.available}" class="text-success">
+                <i class="bi bi-check-circle"></i> In stock
+                (<span th:text="${product.stock}">0</span> available)</p>
+            <p th:unless="${product.available}" class="text-danger">
+                <i class="bi bi-x-circle"></i> Currently out of stock</p>
+
+            <p class="text-muted" th:text="${product.description}">Description</p>
+
+            <!-- Add to cart with a quantity chooser (logged-in customers only). -->
+            <form th:if="${currentUser != null and product.available}" th:action="@{/cart/add}"
+                  method="post" class="d-flex align-items-center gap-2 mt-3">
+                <input type="hidden" name="productId" th:value="${product.id}">
+                <label class="form-label mb-0">Qty</label>
+                <input type="number" name="quantity" value="1" min="1" th:max="${product.stock}"
+                       class="form-control" style="width:90px;">
+                <button type="submit" class="btn btn-ss"><i class="bi bi-cart-plus"></i> Add to cart</button>
+            </form>
+            <a th:if="${currentUser == null}" th:href="@{/login}" class="btn btn-ss mt-3">Login to buy</a>
+        </div>
+    </div>
+
+    <!-- You may also like -->
+    <h4 class="fw-bold mt-5 mb-3">You may also like</h4>
+    <div class="row g-3">
+        <div class="col-6 col-md-3" th:each="sp : ${related}">
+            <div th:replace="~{fragments/cards :: product(${sp.product})}"></div>
+        </div>
+        <p th:if="${related.isEmpty()}" class="text-muted">No related products to show yet.</p>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

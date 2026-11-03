@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- ===== Standard product card =====
+     Use: <div th:replace="~{fragments/cards :: product(${p})}"></div> -->
+<div th:fragment="product(p)" class="card ss-card">
+    <a th:href="@{'/products/' + ${p.id}}">
+        <img class="ss-img" th:classappend="${!p.available} ? 'ss-out'"
+             th:src="@{'/images/products/' + ${p.imageUrl}}"
+             onerror="this.src='/images/products/placeholder.png'"
+             th:alt="${p.name}">
+    </a>
+    <div class="card-body d-flex flex-column">
+        <span class="badge ss-badge-cat align-self-start mb-1" th:text="${p.category.name}">Category</span>
+        <a class="text-decoration-none text-dark fw-semibold" th:href="@{'/products/' + ${p.id}}"
+           th:text="${p.name}">Product name</a>
+        <div class="ss-price mt-1" th:text="'KSh ' + ${#numbers.formatDecimal(p.price,1,'COMMA',2,'POINT')}">KSh 0.00</div>
+
+        <div class="small mt-1">
+            <span th:if="${p.available}" class="text-success">
+                <i class="bi bi-check-circle"></i> In stock (<span th:text="${p.stock}">0</span>)</span>
+            <span th:unless="${p.available}" class="text-danger">
+                <i class="bi bi-x-circle"></i> Out of stock</span>
+        </div>
+
+        <div class="mt-auto pt-2 d-flex gap-2">
+            <a th:href="@{'/products/' + ${p.id}}" class="btn btn-outline-secondary btn-sm flex-fill">View</a>
+            <!-- Logged-in customers can add to cart; guests are sent to login. -->
+            <form th:if="${currentUser != null and p.available}" th:action="@{/cart/add}" method="post" class="flex-fill">
+                <input type="hidden" name="productId" th:value="${p.id}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-ss btn-sm w-100">
+                    <i class="bi bi-cart-plus"></i> Add</button>
+            </form>
+            <a th:if="${currentUser == null}" th:href="@{/login}"
+               class="btn btn-ss btn-sm flex-fill">Login to buy</a>
+        </div>
+    </div>
+</div>
+
+<!-- ===== Recommendation card (adds reason, score and like/dislike) =====
+     Use: <div th:replace="~{fragments/cards :: recommendation(${rec}, ${runId}, ${redirect})}"></div>
+     where rec is a Recommendation entity. -->
+<div th:fragment="recommendation(rec, runId, redirect)" class="card ss-card">
+    <a th:href="@{'/products/' + ${rec.product.id}}">
+        <img class="ss-img" th:src="@{'/images/products/' + ${rec.product.imageUrl}}"
+             onerror="this.src='/images/products/placeholder.png'" th:alt="${rec.product.name}">
+    </a>
+    <div class="card-body d-flex flex-column">
+        <div class="d-flex justify-content-between align-items-start">
+            <span class="badge ss-badge-cat" th:text="${rec.product.category.name}">Category</span>
+            <span class="badge ss-score" th:if="${rec.score != null}"
+                  th:text="'score ' + ${rec.score}">score</span>
+        </div>
+        <a class="text-decoration-none text-dark fw-semibold mt-1"
+           th:href="@{'/products/' + ${rec.product.id}}" th:text="${rec.product.name}">Product</a>
+        <div class="ss-price mt-1"
+             th:text="'KSh ' + ${#numbers.formatDecimal(rec.product.price,1,'COMMA',2,'POINT')}">KSh 0.00</div>
+        <div class="ss-reason mt-1" th:text="${rec.explanation}">Recommended because...</div>
+
+        <div class="mt-auto pt-2 d-flex gap-2 align-items-center">
+            <form th:action="@{/cart/add}" method="post" class="flex-fill">
+                <input type="hidden" name="productId" th:value="${rec.product.id}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="btn btn-ss btn-sm w-100"><i class="bi bi-cart-plus"></i></button>
+            </form>
+            <!-- Like / dislike post to /feedback/submit and come back to this page. -->
+            <form th:action="@{/feedback/submit}" method="post">
+                <input type="hidden" name="productId" th:value="${rec.product.id}">
+                <input type="hidden" name="type" value="LIKE">
+                <input type="hidden" name="runId" th:value="${runId}">
+                <input type="hidden" name="redirect" th:value="${redirect}">
+                <button type="submit" class="btn btn-outline-success btn-sm" title="Like">
+                    <i class="bi bi-hand-thumbs-up"></i></button>
+            </form>
+            <form th:action="@{/feedback/submit}" method="post">
+                <input type="hidden" name="productId" th:value="${rec.product.id}">
+                <input type="hidden" name="type" value="DISLIKE">
+                <input type="hidden" name="runId" th:value="${runId}">
+                <input type="hidden" name="redirect" th:value="${redirect}">
+                <button type="submit" class="btn btn-outline-danger btn-sm" title="Not interested">
+                    <i class="bi bi-hand-thumbs-down"></i></button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

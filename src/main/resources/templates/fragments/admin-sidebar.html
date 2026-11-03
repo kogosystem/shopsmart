@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Admin side navigation. Pages include with:
+     <div th:replace="~{fragments/admin-sidebar :: sidebar('dashboard')}"></div>
+     The argument marks which link is active. -->
+<nav th:fragment="sidebar(active)" class="ss-admin-sidebar">
+    <div class="ss-admin-brand">
+        <i class="bi bi-bag-check-fill"></i> ShopSmart
+        <div class="small text-white-50">Admin panel</div>
+    </div>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a th:href="@{/admin/dashboard}" class="nav-link"
+               th:classappend="${active == 'dashboard'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/products}" class="nav-link"
+               th:classappend="${active == 'products'} ? 'active'">
+                <i class="bi bi-box-seam"></i> Products</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/categories}" class="nav-link"
+               th:classappend="${active == 'categories'} ? 'active'">
+                <i class="bi bi-tags"></i> Categories</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/customers}" class="nav-link"
+               th:classappend="${active == 'customers'} ? 'active'">
+                <i class="bi bi-people"></i> Customers</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/orders}" class="nav-link"
+               th:classappend="${active == 'orders'} ? 'active'">
+                <i class="bi bi-receipt"></i> Orders</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/recommendations}" class="nav-link"
+               th:classappend="${active == 'recommendations'} ? 'active'">
+                <i class="bi bi-stars"></i> Recommendations</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/feedback}" class="nav-link"
+               th:classappend="${active == 'feedback'} ? 'active'">
+                <i class="bi bi-chat-heart"></i> Feedback</a>
+        </li>
+        <li class="nav-item">
+            <a th:href="@{/admin/evaluation}" class="nav-link"
+               th:classappend="${active == 'evaluation'} ? 'active'">
+                <i class="bi bi-graph-up"></i> Evaluation</a>
+        </li>
+    </ul>
+    <div class="ss-admin-foot">
+        <a th:href="@{/}" class="nav-link"><i class="bi bi-shop"></i> View store</a>
+        <form th:action="@{/logout}" method="post" class="px-3 mt-2">
+            <button class="btn btn-sm btn-outline-light w-100" type="submit">
+                <i class="bi bi-box-arrow-right"></i> Logout</button>
+        </form>
+    </div>
+</nav>
+</body>
+</html>

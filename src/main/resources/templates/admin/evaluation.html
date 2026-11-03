@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/head :: head('Evaluation')}"></head>
+<body>
+<div class="ss-admin-wrap">
+    <div th:replace="~{fragments/admin-sidebar :: sidebar('evaluation')}"></div>
+    <div class="ss-admin-content">
+        <h3 class="fw-bold">Recommendation evaluation</h3>
+        <p class="text-muted">
+            Temporal (time-split) test: the engine is given only purchases made BEFORE a split
+            date, then we check how many of its recommendations the customer actually bought AFTER
+            the split. The personalised engine is compared against a popular-products baseline on
+            the same customers and the same top-N, so the comparison is fair.</p>
+
+        <!-- Choose top-N and re-run. -->
+        <form th:action="@{/admin/evaluation}" method="get" class="d-flex align-items-end gap-2 mb-3">
+            <div>
+                <label class="form-label small mb-0">Top-N recommendations</label>
+                <input type="number" name="topN" th:value="${topN}" min="1" max="20"
+                       class="form-control form-control-sm" style="width:110px;">
+            </div>
+            <button class="btn btn-ss btn-sm">Run evaluation</button>
+        </form>
+
+        <div class="row g-3">
+            <div class="col-md-6" th:each="r : ${results}">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold" th:text="${r.methodName}">Method</h5>
+                        <p class="small text-muted mb-2">
+                            Customers evaluated: <span th:text="${r.customersEvaluated}">0</span></p>
+                        <div class="row text-center mb-3">
+                            <div class="col"><div class="fs-4 fw-bold text-success" th:text="${r.precisionPct} + '%'">0</div><div class="small">Precision</div></div>
+                            <div class="col"><div class="fs-4 fw-bold text-primary" th:text="${r.recallPct} + '%'">0</div><div class="small">Recall</div></div>
+                            <div class="col"><div class="fs-4 fw-bold text-warning" th:text="${r.f1Pct} + '%'">0</div><div class="small">F1</div></div>
+                        </div>
+                        <table class="table table-sm mb-0">
+                            <tr><td>True positives (recommended &amp; bought)</td><td class="text-end fw-bold" th:text="${r.truePositives}">0</td></tr>
+                            <tr><td>False positives (recommended, not bought)</td><td class="text-end" th:text="${r.falsePositives}">0</td></tr>
+                            <tr><td>False negatives (bought, not recommended)</td><td class="text-end" th:text="${r.falseNegatives}">0</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+                <h6 class="fw-bold">How to read these</h6>
+                <ul class="small mb-0">
+                    <li><strong>Precision</strong> = TP / (TP + FP): of what we recommended, how much was actually wanted.</li>
+                    <li><strong>Recall</strong> = TP / (TP + FN): of everything the customer later bought, how much we caught.</li>
+                    <li><strong>F1</strong> = the balance (harmonic mean) of precision and recall.</li>
+                    <li>No future purchases are used to generate the recommendations, so there is no data leakage.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
