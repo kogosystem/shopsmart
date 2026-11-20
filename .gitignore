@@ -5,3 +5,5 @@ target/
 *.iml
 nbproject/private/
 application.properties
+.env
+*.log.*
